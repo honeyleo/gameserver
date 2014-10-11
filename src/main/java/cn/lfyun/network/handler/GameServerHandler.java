@@ -32,6 +32,9 @@
 ////////////////////////////////////////////////////////////////////
 package cn.lfyun.network.handler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import cn.lfyun.network.message.PBMessageProto.PBMessage;
@@ -76,13 +79,15 @@ import cn.lfyun.network.message.PBMessageProto.PBMessage;
  */
 public class GameServerHandler extends SimpleChannelInboundHandler<PBMessage> {
 
+	private final static Logger LOG = LoggerFactory.getLogger(GameServerHandler.class.getName());
+	
 	/* (non-Javadoc)
 	 * @see io.netty.channel.SimpleChannelInboundHandler#channelRead0(io.netty.channel.ChannelHandlerContext, java.lang.Object)
 	 */
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx,
 			PBMessage msg) throws Exception {
-		
+		LOG.info("DATA={}", msg.getCmd());
 	}
 
 }

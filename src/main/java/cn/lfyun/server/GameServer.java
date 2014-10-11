@@ -151,4 +151,25 @@ public class GameServer {
 			System.exit(1);
 		}
 	}
+	
+	private static class ShutdownHook implements Runnable {
+
+		@Override
+		public void run() {
+			try {
+				// do shutdown procedure here.
+				logger.info("正在优雅的停止服务器.....");
+				GameServer.shutdown();
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				// any I/O procedure for destory?
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		start(9101);
+		Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(),"shutdownHook"));
+	}
 }
