@@ -32,11 +32,16 @@
 ////////////////////////////////////////////////////////////////////
 package cn.lfyun.network.handler;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import cn.huizhi.car.pb.player.UserPropertyAck_Protocol.UserPropertyAckPro;
+import cn.huizhi.car.pb.player.UserPropertyReq_Protocol.UserPropertyReqPro;
+import cn.lfyun.network.message.AdverAck_Protocol.AdverAckItem;
+import cn.lfyun.network.message.AdverAck_Protocol.AdverAckPro;
 import cn.lfyun.network.message.PBMessageProto.PBMessage;
 
 /**
@@ -88,6 +93,28 @@ public class GameServerHandler extends SimpleChannelInboundHandler<PBMessage> {
 	protected void channelRead0(ChannelHandlerContext ctx,
 			PBMessage msg) throws Exception {
 		LOG.info("DATA={}", msg.getCmd());
+		switch (msg.getCmd()) {
+		case 0x21:
+			AdverAckPro.Builder builder = AdverAckPro.newBuilder();
+			AdverAckItem.Builder item = AdverAckItem.newBuilder();
+			item.setContentType(1).setContentName("系统公告").setContent("封测期间一律八折");
+			builder.addItem(item);
+			PBMessage.Builder pbBuilder = PBMessage.newBuilder();
+			pbBuilder.setCmd(0x22).setSessionId(msg.getSessionId()).setData(builder.build().toByteString());
+			ctx.channel().writeAndFlush(pbBuilder.build());
+			break;
+		case 0x23:
+			UserPropertyReqPro userPropertyReqPro = UserPropertyReqPro.parseFrom(msg.getData().toByteArray());
+			LOG.info("请求玩家={}", userPropertyReqPro.getPlayerID());
+			UserPropertyAckPro.Builder builder2 = UserPropertyAckPro.newBuilder();
+			builder2.setCurExp(1000);
+			PBMessage.Builder pbBuilder2 = PBMessage.newBuilder();
+			pbBuilder2.setCmd(0x24).setSessionId(msg.getSessionId()).setData(builder2.build().toByteString());
+			ctx.channel().writeAndFlush(pbBuilder2.build());
+			break;
+		default:
+			break;
+		}
 	}
 
 }
