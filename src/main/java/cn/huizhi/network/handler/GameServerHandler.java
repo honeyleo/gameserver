@@ -30,7 +30,7 @@
 //                  	不见满街漂亮妹，哪个归得程序员？                                                                            //
 //                                                                //
 ////////////////////////////////////////////////////////////////////
-package cn.lfyun.network.handler;
+package cn.huizhi.network.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -38,9 +38,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.huizhi.car.pb.player.UserPropertyAck_Protocol.UserPropertyAckPro;
-import cn.huizhi.car.pb.player.UserPropertyReq_Protocol.UserPropertyReqPro;
-import cn.lfyun.network.message.PBMessageProto.PBMessage;
+import cn.huizhi.message.PBMessagePro.PBMessage;
+import cn.huizhi.message.player.PlayerInfoAckPro.PlayerInfoAck;
+import cn.huizhi.message.player.PlayerInfoReqPro.PlayerInfoReq;
 
 /**
  * @copyright SHENZHEN RONG WANG HUI ZHI TECHNOLOGY CORP
@@ -93,10 +93,10 @@ public class GameServerHandler extends SimpleChannelInboundHandler<PBMessage> {
 		LOG.info("DATA={}", msg.getCmd());
 		switch (msg.getCmd()) {
 		case 0x23:
-			UserPropertyReqPro userPropertyReqPro = UserPropertyReqPro.parseFrom(msg.getData().toByteArray());
-			LOG.info("请求玩家={}", userPropertyReqPro.getPlayerID());
-			UserPropertyAckPro.Builder builder2 = UserPropertyAckPro.newBuilder();
-			builder2.setCurExp(1000);
+			PlayerInfoReq playerInfoReq = PlayerInfoReq.parseFrom(msg.getData().toByteArray());
+			LOG.info("请求玩家={}", playerInfoReq.getId());
+			PlayerInfoAck.Builder builder2 = PlayerInfoAck.newBuilder();
+			builder2.setCurrExp(1000);
 			PBMessage.Builder pbBuilder2 = PBMessage.newBuilder();
 			pbBuilder2.setCmd(0x24).setSessionId(msg.getSessionId()).setData(builder2.build().toByteString());
 			ctx.channel().writeAndFlush(pbBuilder2.build());

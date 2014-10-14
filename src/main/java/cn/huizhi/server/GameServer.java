@@ -30,7 +30,7 @@
 //                  	不见满街漂亮妹，哪个归得程序员？                                                                            //
 //                                                                //
 ////////////////////////////////////////////////////////////////////
-package cn.lfyun.server;
+package cn.huizhi.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -52,8 +52,8 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.lfyun.network.handler.GameServerHandler;
-import cn.lfyun.network.message.PBMessageProto.PBMessage;
+import cn.huizhi.message.PBMessagePro.PBMessage;
+import cn.huizhi.network.handler.GameServerHandler;
 
 /**
  * @copyright SHENZHEN RONG WANG HUI ZHI TECHNOLOGY CORP
