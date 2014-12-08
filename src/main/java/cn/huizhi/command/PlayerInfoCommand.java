@@ -30,26 +30,19 @@
 //                  	不见满街漂亮妹，哪个归得程序员？                                                                            //
 //                                                                //
 ////////////////////////////////////////////////////////////////////
-package cn.huizhi.network.handler;
+package cn.huizhi.command;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cn.huizhi.message.PBMessagePro.PBMessage;
-import cn.huizhi.message.player.PlayerInfoAckPro.PlayerInfoAck;
 import cn.huizhi.message.player.PlayerInfoReqPro.PlayerInfoReq;
-import cn.huizhi.network.Dispatcher;
+import cn.huizhi.network.Event;
+import cn.huizhi.network.handler.Command;
 
 /**
  * @copyright SHENZHEN RONG WANG HUI ZHI TECHNOLOGY CORP
  * @author Lyon.liao
- * 创建时间：2014年10月10日
+ * 创建时间：2014年10月20日
  * 类说明：
  * 
- * 最后修改时间：2014年10月10日
+ * 最后修改时间：2014年10月20日
  * 修改内容： 新建此类
  *************************************************************
  *                                    .. .vr       
@@ -81,31 +74,12 @@ import cn.huizhi.network.Dispatcher;
  *
  ***************************************************************
  */
-public class GameServerHandler extends SimpleChannelInboundHandler<PBMessage> {
+public class PlayerInfoCommand implements Command {
 
-	private final static Logger LOG = LoggerFactory.getLogger(GameServerHandler.class.getName());
-	
-	/* (non-Javadoc)
-	 * @see io.netty.channel.SimpleChannelInboundHandler#channelRead0(io.netty.channel.ChannelHandlerContext, java.lang.Object)
-	 */
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx,
-			PBMessage msg) throws Exception {
-		LOG.info("DATA={}", msg.getCmd());
-		Dispatcher.dispatch(msg, ctx.channel());
-		switch (msg.getCmd()) {
-		case 0x23:
-			PlayerInfoReq playerInfoReq = PlayerInfoReq.parseFrom(msg.getData().toByteArray());
-			LOG.info("请求玩家={}", playerInfoReq.getId());
-			PlayerInfoAck.Builder builder2 = PlayerInfoAck.newBuilder();
-			builder2.setCurrExp(1000);
-			PBMessage.Builder pbBuilder2 = PBMessage.newBuilder();
-			pbBuilder2.setCmd(0x24).setSessionId(msg.getSessionId()).setData(builder2.build().toByteString());
-			ctx.channel().writeAndFlush(pbBuilder2.build());
-			break;
-		default:
-			break;
-		}
+	public void execute(Event event) throws Exception {
+		PlayerInfoReq playerInfoReq = event.parseObject(PlayerInfoReq.class);
+		playerInfoReq.getId();
 	}
 
 }
